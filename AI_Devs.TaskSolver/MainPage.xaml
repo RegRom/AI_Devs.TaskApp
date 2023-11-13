@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="AI_Devs.TaskApp.MainPage">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Spacing="25"
+            Padding="30,0"
+            VerticalOptions="Center">
+
+            <Label
+                Text="AI_Devs Task Solver"
+                SemanticProperties.HeadingLevel="Level1"
+                FontSize="32"
+                HorizontalOptions="Center" />
+
+            <Label
+                Text="Task Name"
+                SemanticProperties.HeadingLevel="Level2"
+                SemanticProperties.Description=""
+                FontSize="18"
+                HorizontalOptions="Center" />
+
+            <Entry 
+                x:Name="TaskName" />
+
+            <Button
+                x:Name="CounterBtn"
+                Text="Get Task Text"
+                SemanticProperties.Hint="Gets the Task Text"
+                Clicked="OnCounterClicked"
+                HorizontalOptions="Center" />
+
+            <Label
+                Text="Task Content"
+                SemanticProperties.HeadingLevel="Level2"
+                SemanticProperties.Description=""
+                FontSize="18"
+                HorizontalOptions="Center" />
+
+            <Label 
+                x:Name="TaskContent"
+                Text="" />
+
+            <Editor 
+                x:Name="TaskInput"
+                AutoSize="TextChanges"
+                Text="" />
+
+            <Editor 
+                x:Name="AnswerInput"
+                AutoSize="TextChanges"
+                Text="" />
+
+            <Button
+                x:Name="AnswerBtn"
+                Text="Send answer"
+                SemanticProperties.Hint="Sends the answer"
+                Clicked="OnSendAnswerClicked"
+                HorizontalOptions="Center" />
+
+            <Label 
+                x:Name="AnswerResponse"
+                Text="" />
+
+            <Button
+                x:Name="BloggerBtn"
+                Text="Blogger"
+                SemanticProperties.Hint="Sends the answer"
+                Clicked="OnBloggerBtnClicked"
+                HorizontalOptions="Center" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

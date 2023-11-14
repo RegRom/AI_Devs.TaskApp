@@ -1,31 +1,19 @@
-﻿using AI_Devs.TaskApp.Common.Dtos;
-using AI_Devs.TaskApp.Services.Interfaces;
+﻿using AI_Devs.TaskApp.Services.Interfaces;
 using AI_Devs.TaskApp.Services.Services;
 using OpenAI.Net;
 
 namespace AI_Devs.TaskApp.Tasks;
 
-public class Blogger
+public class Blogger : BaseTask
 {
-    private readonly TaskContentGenericResponseDto<string[]> taskContentGenericResponseDto;
-    private readonly IOpenAIService openAIService;
-    private readonly ITaskService taskService;
-    private readonly string taskName = "blogger";
-
-    public Blogger()
+    public Blogger(IOpenAIService openAIService, ITaskService taskService) : base(openAIService, taskService, "blogger")
     {
-        
-    }
 
-    public Blogger(IOpenAIService openAIService, ITaskService taskService)
-    {
-        this.openAIService = openAIService;
-        this.taskService = taskService;
     }
 
     public async Task PerformTask()
     {
-        var content = await taskService.GetRawTaskContent(taskName);
+        var content = await _taskService.GetRawTaskContent(_taskName);
 
         string prompt = @"You are a culinary blogger assistant that prepares a json with content for automated article creation. 
             You accept a list of chapter names and you generate a JSON file with a  table of strings that contains content for each chapter.
@@ -44,14 +32,14 @@ public class Blogger
             Message.Create(ChatRoleType.User, content),
         };
 
-        var response = await openAIService.Chat.Get(messages, o =>
+        var response = await _openAiService.Chat.Get(messages, o =>
         {
             o.Model = ModelTypes.Gpt41106Preview;
             o.ResponseFormat = new ChatResponseFormatType { Type = "json_object" };
             o.MaxTokens = 2000;
         });
 
-        var answerResponse = await taskService.SendJsonAnswer(taskName, response.Result.Choices.First().Message.Content);
+        var answerResponse = await _taskService.SendJsonAnswer(_taskName, response.Result.Choices.First().Message.Content);
 
     }
 }

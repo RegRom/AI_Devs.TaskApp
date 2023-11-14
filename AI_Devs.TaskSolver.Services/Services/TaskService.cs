@@ -52,6 +52,24 @@ public class TaskService : ITaskService
         return response.Data;
     }
 
+    public async Task<TaskContentGenericResponseDto<T>> GetTaskContent<T>(string taskName)
+    {
+        var token = await authenticator.GetToken(taskName, restClient);
+
+        var request = new RestRequest($"{Urls.TaskUrl}{token.Value}");
+        var response = await restClient.ExecuteGetAsync<TaskContentGenericResponseDto<T>>(request);
+
+        if (!response.IsSuccessful)
+        {
+            return new TaskContentGenericResponseDto<T>
+            {
+                Msg = Errors.NoTaskContent
+            };
+        }
+
+        return response.Data;
+    }
+
     public async Task<AnswerResponseDto> SendAnswer(string taskName, string answer)
     {
         var token = await authenticator.GetToken(taskName, restClient);
@@ -89,5 +107,26 @@ public class TaskService : ITaskService
         }
 
         return answerResponse.Data;
+    }
+
+    public async Task<QuestionResponseDto> SendQuestion(string question, string taskName)
+    {
+        var token = await authenticator.GetToken(taskName, restClient);
+        var request = new RestRequest($"{Urls.TaskUrl}{token.Value}", Method.Post);
+        request.AlwaysMultipartFormData = true;
+        
+        request.AddParameter("question", question);
+        
+        //var response = await restClient.ExecuteAsync(request);
+        var answerResponse = await restClient.ExecutePostAsync<QuestionResponseDto>(request);
+
+        if (answerResponse.IsSuccessful)
+        {
+            return answerResponse.Data;
+        }
+        else
+        {
+            return new QuestionResponseDto { Code = -1, Msg = "Error fetching data" };
+        }
     }
 }

@@ -1,6 +1,24 @@
-﻿namespace AI_Devs.TaskApp.Tasks;
+﻿using AI_Devs.TaskApp.Services.Interfaces;
+using OpenAI.Net;
+
+namespace AI_Devs.TaskApp.Tasks;
 
 public class BaseTask
 {
+    protected readonly IOpenAIService _openAiService;
+    protected readonly ITaskService _taskService;
+    protected string _taskName;
+
+    public BaseTask(IOpenAIService openAiService, ITaskService taskService)
+    {
+        _openAiService = openAiService;
+        _taskService = taskService;
+    }
     
+    public BaseTask(IOpenAIService openAiService, ITaskService taskService, string taskName)
+    {
+        _openAiService = openAiService;
+        _taskService = taskService;
+        _taskName = taskName;
+    }
 }

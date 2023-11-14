@@ -70,6 +70,20 @@
                 SemanticProperties.Hint="Sends the answer"
                 Clicked="OnBloggerBtnClicked"
                 HorizontalOptions="Center" />
+            
+            <Button
+                x:Name="LiarBtn"
+                Text="Liar"
+                SemanticProperties.Hint="Sends the answer"
+                Clicked="OnLiarBtnClicked"
+                HorizontalOptions="Center" />
+
+            <Button
+                x:Name="InpromptBtn"
+                Text="Inprompt"
+                SemanticProperties.Hint="Sends the answer"
+                Clicked="OnInpromptBtnClicked"
+                HorizontalOptions="Center" />
 
         </VerticalStackLayout>
     </ScrollView>

@@ -12,4 +12,7 @@ public class TaskContentGenericResponseDto<T>
 
     [JsonPropertyName("input")]
     public T Input { get; set; }
+
+    [JsonPropertyName("question")]
+    public string Question { get; set; }
 }

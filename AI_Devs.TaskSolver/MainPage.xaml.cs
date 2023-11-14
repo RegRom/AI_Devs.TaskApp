@@ -55,5 +55,29 @@ namespace AI_Devs.TaskApp
 
             await blogger.PerformTask();
         }
+        
+        private async void OnLiarBtnClicked(object sender, EventArgs e)
+        {
+            SemanticScreenReader.Announce(LiarBtn.Text);
+
+            var taskService = this.Handler.MauiContext.Services.GetServices<ITaskService>().First();
+            var openAIService = this.Handler.MauiContext.Services.GetServices<IOpenAIService>().First();
+
+            var liar = new Liar(openAIService, taskService);
+
+            await liar.PerformTask();
+        }
+
+        private async void OnInpromptBtnClicked(object sender, EventArgs e)
+        {
+            SemanticScreenReader.Announce(InpromptBtn.Text);
+
+            var taskService = this.Handler.MauiContext.Services.GetServices<ITaskService>().First();
+            var openAIService = this.Handler.MauiContext.Services.GetServices<IOpenAIService>().First();
+
+            var liar = new Inprompt(openAIService, taskService);
+
+            await liar.PerformTask();
+        }
     }
 }

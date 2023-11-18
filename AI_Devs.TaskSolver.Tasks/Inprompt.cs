@@ -13,7 +13,7 @@ public class Inprompt : BaseTask
     {
     }
     
-    public async Task PerformTask()
+    public override async Task PerformTask()
     {
         var content = await _taskService.GetTaskContent<string[]>(_taskName);
         

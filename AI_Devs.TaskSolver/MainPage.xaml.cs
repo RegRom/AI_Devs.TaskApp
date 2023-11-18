@@ -79,5 +79,29 @@ namespace AI_Devs.TaskApp
 
             await liar.PerformTask();
         }
+
+        private async void OnEmbeddingBtnClicked(object sender, EventArgs e)
+        {
+            SemanticScreenReader.Announce(EmbeddingBtn.Text);
+
+            var taskService = this.Handler.MauiContext.Services.GetServices<ITaskService>().First();
+            var openAIService = this.Handler.MauiContext.Services.GetServices<IOpenAIService>().First();
+
+            var embedding = new Embedding(openAIService, taskService);
+
+            await embedding.PerformTask();
+        }
+
+        private async void OnWhisperBtnClicked(object sender, EventArgs e)
+        {
+            SemanticScreenReader.Announce(EmbeddingBtn.Text);
+
+            var taskService = this.Handler.MauiContext.Services.GetServices<ITaskService>().First();
+            var openAIService = this.Handler.MauiContext.Services.GetServices<IOpenAIService>().First();
+
+            var whisper = new Whisper(openAIService, taskService);
+
+            await whisper.PerformTask();
+        }
     }
 }

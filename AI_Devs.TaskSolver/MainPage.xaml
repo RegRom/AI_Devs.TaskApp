@@ -64,27 +64,60 @@
                 x:Name="AnswerResponse"
                 Text="" />
 
-            <Button
-                x:Name="BloggerBtn"
-                Text="Blogger"
-                SemanticProperties.Hint="Sends the answer"
-                Clicked="OnBloggerBtnClicked"
-                HorizontalOptions="Center" />
-            
-            <Button
-                x:Name="LiarBtn"
-                Text="Liar"
-                SemanticProperties.Hint="Sends the answer"
-                Clicked="OnLiarBtnClicked"
-                HorizontalOptions="Center" />
+            <Grid RowDefinitions="*,*,*"
+                    ColumnDefinitions="*,*,*">
 
-            <Button
-                x:Name="InpromptBtn"
-                Text="Inprompt"
-                SemanticProperties.Hint="Sends the answer"
-                Clicked="OnInpromptBtnClicked"
-                HorizontalOptions="Center" />
+                <!-- Row 0 -->
+                <Button
+                    x:Name="BloggerBtn"
+                    Text="Blogger"
+                    SemanticProperties.Hint="Sends the answer"
+                    Clicked="OnBloggerBtnClicked"
+                    HorizontalOptions="Center" 
+                    Grid.Row="0"
+                    Grid.Column="0"
+                />
+                <Button
+                    x:Name="LiarBtn"
+                    Text="Liar"
+                    SemanticProperties.Hint="Sends the answer"
+                    Clicked="OnLiarBtnClicked"
+                    HorizontalOptions="Center" 
+                    Grid.Row="0"
+                    Grid.Column="2"
+                />
 
+                <!-- Row 1 -->
+                <Button
+                    x:Name="InpromptBtn"
+                    Text="Inprompt"
+                    SemanticProperties.Hint="Sends the answer"
+                    Clicked="OnInpromptBtnClicked"
+                    HorizontalOptions="Center" 
+                    Grid.Row="1"
+                    Grid.Column="0"
+                />
+
+                <Button
+                    x:Name="EmbeddingBtn"
+                    Text="Embedding"
+                    SemanticProperties.Hint="Sends the answer"
+                    Clicked="OnEmbeddingBtnClicked"
+                    HorizontalOptions="Center" 
+                    Grid.Row="1"
+                    Grid.Column="1"
+                />
+
+                <Button
+                    x:Name="WhisperBtn"
+                    Text="Whisper"
+                    SemanticProperties.Hint="Sends the answer"
+                    Clicked="OnWhisperBtnClicked"
+                    HorizontalOptions="Center" 
+                    Grid.Row="1"
+                    Grid.Column="2"
+                />
+            </Grid>
         </VerticalStackLayout>
     </ScrollView>
 

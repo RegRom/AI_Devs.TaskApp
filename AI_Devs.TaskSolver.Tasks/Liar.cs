@@ -13,7 +13,7 @@ public class Liar : BaseTask
     {
     }
     
-    public async Task PerformTask()
+    public override async Task PerformTask()
     {
         var question = "Tell me three interesting things about Poland";
         var answer = await _taskService.SendQuestion(question, "liar");

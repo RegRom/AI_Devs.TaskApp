@@ -1,9 +1,10 @@
 ﻿using AI_Devs.TaskApp.Services.Interfaces;
+using AI_Devs.TaskApp.Tasks.Interfaces;
 using OpenAI.Net;
 
 namespace AI_Devs.TaskApp.Tasks;
 
-public class BaseTask
+public abstract class BaseTask : ITaskPerformer
 {
     protected readonly IOpenAIService _openAiService;
     protected readonly ITaskService _taskService;
@@ -21,4 +22,6 @@ public class BaseTask
         _taskService = taskService;
         _taskName = taskName;
     }
+
+    public abstract Task PerformTask();
 }

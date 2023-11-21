@@ -6,30 +6,27 @@ namespace AI_Devs.TaskApp
 {
     public partial class MainPage : ContentPage
     {
-        int count = 0;
         private readonly ITaskService taskService;
+        private readonly IOpenAIService openAIService;
 
         public MainPage()
         {
             InitializeComponent();
         }
 
-        public MainPage(ITaskService taskService)
+        public MainPage(ITaskService taskService, IOpenAIService openAIService)
         {
             InitializeComponent();
             this.taskService = taskService;
+            this.openAIService = openAIService;
         }
 
-        private async void OnCounterClicked(object sender, EventArgs e)
+        private async void OnGetTaskContentClicked(object sender, EventArgs e)
         {
-            SemanticScreenReader.Announce(CounterBtn.Text);
+            SemanticScreenReader.Announce(GetTaskContentBtn.Text);
 
-            var localServices = this.Handler.MauiContext.Services.GetServices<ITaskService>();
-            var localTaskService = localServices.First();
-            //var taskContent = await localTaskService.GetTaskContent(TaskName.Text);
-            var taskContent = await localTaskService.GetRawTaskContent(TaskName.Text);
+            var taskContent = await taskService.GetRawTaskContent(TaskName.Text);
 
-            //TaskContent.Text = taskContent?.Msg;
             TaskInput.Text = taskContent;
         }
 
@@ -37,9 +34,7 @@ namespace AI_Devs.TaskApp
         {
             SemanticScreenReader.Announce(AnswerBtn.Text);
 
-            var localServices = this.Handler.MauiContext.Services.GetServices<ITaskService>();
-            var localTaskService = localServices.First();
-            var answerResponse = await localTaskService.SendAnswer(TaskName.Text, AnswerInput.Text);
+            var answerResponse = await taskService.SendAnswer(TaskName.Text, AnswerInput.Text);
 
             AnswerResponse.Text = answerResponse.Note;
         }
@@ -47,9 +42,6 @@ namespace AI_Devs.TaskApp
         private async void OnBloggerBtnClicked(object sender, EventArgs e)
         {
             SemanticScreenReader.Announce(BloggerBtn.Text);
-
-            var taskService = this.Handler.MauiContext.Services.GetServices<ITaskService>().First();
-            var openAIService = this.Handler.MauiContext.Services.GetServices<IOpenAIService>().First();
 
             var blogger = new Blogger(openAIService, taskService);
 
@@ -60,9 +52,6 @@ namespace AI_Devs.TaskApp
         {
             SemanticScreenReader.Announce(LiarBtn.Text);
 
-            var taskService = this.Handler.MauiContext.Services.GetServices<ITaskService>().First();
-            var openAIService = this.Handler.MauiContext.Services.GetServices<IOpenAIService>().First();
-
             var liar = new Liar(openAIService, taskService);
 
             await liar.PerformTask();
@@ -71,9 +60,6 @@ namespace AI_Devs.TaskApp
         private async void OnInpromptBtnClicked(object sender, EventArgs e)
         {
             SemanticScreenReader.Announce(InpromptBtn.Text);
-
-            var taskService = this.Handler.MauiContext.Services.GetServices<ITaskService>().First();
-            var openAIService = this.Handler.MauiContext.Services.GetServices<IOpenAIService>().First();
 
             var liar = new Inprompt(openAIService, taskService);
 
@@ -84,9 +70,6 @@ namespace AI_Devs.TaskApp
         {
             SemanticScreenReader.Announce(EmbeddingBtn.Text);
 
-            var taskService = this.Handler.MauiContext.Services.GetServices<ITaskService>().First();
-            var openAIService = this.Handler.MauiContext.Services.GetServices<IOpenAIService>().First();
-
             var embedding = new Embedding(openAIService, taskService);
 
             await embedding.PerformTask();
@@ -96,10 +79,27 @@ namespace AI_Devs.TaskApp
         {
             SemanticScreenReader.Announce(EmbeddingBtn.Text);
 
-            var taskService = this.Handler.MauiContext.Services.GetServices<ITaskService>().First();
-            var openAIService = this.Handler.MauiContext.Services.GetServices<IOpenAIService>().First();
+            var fileService = this.Handler.MauiContext.Services.GetService<IFileService>();
 
-            var whisper = new Whisper(openAIService, taskService);
+            var whisper = new Whisper(openAIService, taskService, fileService);
+
+            await whisper.PerformTask();
+        }
+
+        private async void OnFunctionsBtnClicked(object sender, EventArgs e)
+        {
+            SemanticScreenReader.Announce(FunctionsBtn.Text);
+
+            var whisper = new Functions(openAIService, taskService);
+
+            await whisper.PerformTask();
+        }
+
+        private async void OnRodoBtnClicked(object sender, EventArgs e)
+        {
+            SemanticScreenReader.Announce(RodoBtn.Text);
+
+            var whisper = new Rodo(openAIService, taskService);
 
             await whisper.PerformTask();
         }

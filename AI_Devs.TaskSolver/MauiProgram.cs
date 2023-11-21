@@ -28,8 +28,10 @@ namespace AI_Devs.TaskApp
                 });
 
             builder.Configuration.AddConfiguration(config);
-
-            builder.Services.AddOpenAIServices(options =>
+            builder.Services
+                .AddSingleton<MainPage>()
+                .AddHttpClient()
+                .AddOpenAIServices(options =>
             {
                 options.ApiKey = builder.Configuration["OpenAI:ApiKey"];
             });
@@ -45,6 +47,7 @@ namespace AI_Devs.TaskApp
         {
             mauiAppBuilder.Services.AddSingleton<IAuthenticator, Authenticator>();
             mauiAppBuilder.Services.AddSingleton<ITaskService, TaskService>();
+            mauiAppBuilder.Services.AddSingleton<IFileService, FileService>();
 
             return mauiAppBuilder;
         }

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="AI_Devs.TaskApp.MainPage">
@@ -26,10 +26,10 @@
                 x:Name="TaskName" />
 
             <Button
-                x:Name="CounterBtn"
+                x:Name="GetTaskContentBtn"
                 Text="Get Task Text"
                 SemanticProperties.Hint="Gets the Task Text"
-                Clicked="OnCounterClicked"
+                Clicked="OnGetTaskContentClicked"
                 HorizontalOptions="Center" />
 
             <Label
@@ -78,6 +78,15 @@
                     Grid.Column="0"
                 />
                 <Button
+                    x:Name="FunctionsBtn"
+                    Text="Functions"
+                    SemanticProperties.Hint="Sends the answer"
+                    Clicked="OnFunctionsBtnClicked"
+                    HorizontalOptions="Center" 
+                    Grid.Row="0"
+                    Grid.Column="1"
+                />
+                <Button
                     x:Name="LiarBtn"
                     Text="Liar"
                     SemanticProperties.Hint="Sends the answer"
@@ -86,7 +95,6 @@
                     Grid.Row="0"
                     Grid.Column="2"
                 />
-
                 <!-- Row 1 -->
                 <Button
                     x:Name="InpromptBtn"
@@ -116,6 +124,16 @@
                     HorizontalOptions="Center" 
                     Grid.Row="1"
                     Grid.Column="2"
+                />
+
+                <Button
+                    x:Name="RodoBtn"
+                    Text="Rodo"
+                    SemanticProperties.Hint="Sends the answer"
+                    Clicked="OnRodoBtnClicked"
+                    HorizontalOptions="Center" 
+                    Grid.Row="2"
+                    Grid.Column="0"
                 />
             </Grid>
         </VerticalStackLayout>

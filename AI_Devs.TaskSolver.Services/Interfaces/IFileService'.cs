@@ -1,6 +1,6 @@
 ﻿namespace AI_Devs.TaskApp.Services.Interfaces;
 
-public class IFileService_
+public interface IFileService
 {
-    
+    Task DownloadFileAsync(string fileUrl, string localPath);
 }

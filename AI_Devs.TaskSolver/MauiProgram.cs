@@ -37,7 +37,8 @@ namespace AI_Devs.TaskApp
                     options.ApiKey = builder.Configuration["OpenAI:ApiKey"];
                 });
 
-            builder.Services.AddHttpClient<ITaskService, TaskService>();
+            builder.Services.AddHttpClient<ITaskService, TaskService>()
+                .AddStandardResilienceHandler();
 
 //#if DEBUG
             builder.Logging.AddDebug();

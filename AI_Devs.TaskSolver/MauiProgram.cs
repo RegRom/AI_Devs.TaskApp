@@ -30,15 +30,18 @@ namespace AI_Devs.TaskApp
             builder.Configuration.AddConfiguration(config);
             builder.Services
                 .AddSingleton<MainPage>()
+                .AddLogging()
                 .AddHttpClient()
                 .AddOpenAIServices(options =>
-            {
-                options.ApiKey = builder.Configuration["OpenAI:ApiKey"];
-            });
+                {
+                    options.ApiKey = builder.Configuration["OpenAI:ApiKey"];
+                });
 
-#if DEBUG
+            builder.Services.AddHttpClient<ITaskService, TaskService>();
+
+//#if DEBUG
             builder.Logging.AddDebug();
-#endif
+//#endif
 
             return builder.Build();
         }

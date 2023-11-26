@@ -10,9 +10,9 @@ public interface ITaskService
 
     Task<string> GetRawTaskContent(string taskName);
 
-    Task<AnswerResponseDto> SendAnswer(string taskName, string answer);
+    Task<AnswerResponseDto?> SendAnswer(string taskName, string answer);
 
-    Task<AnswerResponseDto> SendJsonAnswer(string taskName, string answer);
+    Task<AnswerResponseDto?> SendJsonAnswer(string taskName, string answer);
 
-    Task<QuestionResponseDto> SendQuestion(string question, string taskName);
+    Task<QuestionResponseDto?> SendQuestion(string question, string taskName);
 }

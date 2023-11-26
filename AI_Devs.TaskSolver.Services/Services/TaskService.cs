@@ -1,47 +1,54 @@
 ﻿using AI_Devs.TaskApp.Common.Consts;
 using AI_Devs.TaskApp.Common.Dtos;
 using AI_Devs.TaskApp.Services.Interfaces;
-using RestSharp;
+using Microsoft.Extensions.Logging;
+using System.Net.Http.Json;
+using System.Text;
+using System.Text.Json;
 
 namespace AI_Devs.TaskApp.Services.Services;
 
 public class TaskService : ITaskService
 {
     private readonly IAuthenticator authenticator;
-    private readonly RestClient restClient;
+    private readonly HttpClient httpClient;
+    private readonly ILogger<TaskService> _logger;
 
-    public TaskService(IAuthenticator authenticator)
+    public TaskService(IAuthenticator authenticator, HttpClient httpClient, ILogger<TaskService> logger)
     {
         this.authenticator = authenticator;
-        restClient = new RestClient(Urls.BaseUrl);
+        this.httpClient = httpClient;
+        httpClient.BaseAddress = new Uri(Urls.BaseUrl);
+        _logger = logger;
     }
 
     public async Task<string> GetRawTaskContent(string taskName)
     {
-        var token = await authenticator.GetToken(taskName, restClient);
+        var token = await authenticator.GetToken(taskName, httpClient);
 
-        var request = new RestRequest($"{Urls.TaskUrl}{token.Value}");
-
-        var response = await restClient.ExecuteAsync(request);
-
-        if (response.IsSuccessful)
+        if (token is not null)
         {
-            return response.Content;
+            var response = await httpClient.GetAsync($"{Urls.TaskUrl}{token.Value}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadAsStringAsync();
+            }
+            else
+            {
+                return "Error fetching data";
+            }
         }
-        else
-        {
-            return "Error fetching data";
-        }
+
+        return "Failed to get the token for this task";
     }
 
     public async Task<TaskContentResponseDto> GetTaskContent(string taskName)
     {
-        var token = await authenticator.GetToken(taskName, restClient);
+        var token = await authenticator.GetToken(taskName, httpClient);
+        var response = await httpClient.GetFromJsonAsync<TaskContentResponseDto>($"{Urls.TaskUrl}{token.Value}");
 
-        var request = new RestRequest($"{Urls.TaskUrl}{token.Value}");
-        var response = await restClient.ExecuteGetAsync<TaskContentResponseDto>(request);
-
-        if (!response.IsSuccessful)
+        if (response is null)
         {
             return new TaskContentResponseDto
             {
@@ -49,17 +56,17 @@ public class TaskService : ITaskService
             };
         }
 
-        return response.Data;
+        return response;
     }
 
     public async Task<TaskContentGenericResponseDto<T>> GetTaskContent<T>(string taskName)
     {
-        var token = await authenticator.GetToken(taskName, restClient);
+        var token = await authenticator.GetToken(taskName, httpClient);
 
-        var request = new RestRequest($"{Urls.TaskUrl}{token.Value}");
-        var response = await restClient.ExecuteGetAsync<TaskContentGenericResponseDto<T>>(request);
+        var response = await httpClient
+            .GetFromJsonAsync<TaskContentGenericResponseDto<T>>($"{Urls.TaskUrl}{token.Value}");
 
-        if (!response.IsSuccessful)
+        if (response is null)
         {
             return new TaskContentGenericResponseDto<T>
             {
@@ -67,66 +74,67 @@ public class TaskService : ITaskService
             };
         }
 
-        return response.Data;
+        return response;
     }
 
-    public async Task<AnswerResponseDto> SendAnswer(string taskName, string answer)
+    public async Task<AnswerResponseDto?> SendAnswer(string taskName, string answer)
     {
-        var token = await authenticator.GetToken(taskName, restClient);
-
+        var token = await authenticator.GetToken(taskName, httpClient);
         var answerBody = new AnswerRequestDto
         {
             Answer = answer,
         };
 
-        var request = new RestRequest($"{Urls.AnswerUrl}{token.Value}")
-            .AddJsonBody(answerBody);
+        var httpResponse = await httpClient.PostAsJsonAsync($"{Urls.AnswerUrl}{token.Value}", answerBody);
 
-        var answerResponse = await restClient.ExecutePostAsync<AnswerResponseDto>(request);
-
-        if (answerResponse.IsSuccessful)
+        if (!httpResponse.IsSuccessStatusCode)
         {
-
+            _logger.LogError($"Failed to post data. Status code: {httpResponse.StatusCode}");
         }
 
-        return answerResponse.Data;
+        var responseContent = await httpResponse.Content.ReadAsStringAsync();
+        var answerResponse = JsonSerializer.Deserialize<AnswerResponseDto>(responseContent);
+
+        return answerResponse;
     }
     
-    public async Task<AnswerResponseDto> SendJsonAnswer(string taskName, string answer)
+    public async Task<AnswerResponseDto?> SendJsonAnswer(string taskName, string answer)
     {
-        var token = await authenticator.GetToken(taskName, restClient);
+        var token = await authenticator.GetToken(taskName, httpClient);
+        var httpContent = new StringContent(answer, Encoding.UTF8, "application/json");
+        var httpResponse = await httpClient.PostAsync($"{Urls.AnswerUrl}{token.Value}", httpContent);
 
-        var request = new RestRequest($"{Urls.AnswerUrl}{token.Value}", Method.Post);
-        request.AddParameter("application/json", answer, ParameterType.RequestBody);
-        
-        var answerResponse = await restClient.ExecutePostAsync<AnswerResponseDto>(request);
-
-        if (answerResponse.IsSuccessful)
+        if (!httpResponse.IsSuccessStatusCode)
         {
-
+            _logger.LogError($"Failed to post data. Status code: {httpResponse.StatusCode}");
         }
 
-        return answerResponse.Data;
+        var responseString = await httpResponse.Content.ReadAsStringAsync();
+
+        return JsonSerializer.Deserialize<AnswerResponseDto>(responseString);
     }
 
-    public async Task<QuestionResponseDto> SendQuestion(string question, string taskName)
+    public async Task<QuestionResponseDto?> SendQuestion(string question, string taskName)
     {
-        var token = await authenticator.GetToken(taskName, restClient);
-        var request = new RestRequest($"{Urls.TaskUrl}{token.Value}", Method.Post);
-        request.AlwaysMultipartFormData = true;
-        
-        request.AddParameter("question", question);
-        
-        //var response = await restClient.ExecuteAsync(request);
-        var answerResponse = await restClient.ExecutePostAsync<QuestionResponseDto>(request);
+        var token = await authenticator.GetToken(taskName, httpClient);
 
-        if (answerResponse.IsSuccessful)
+        var content = new MultipartFormDataContent
         {
-            return answerResponse.Data;
+            { new StringContent(question), "question" }
+        };
+
+        var response = await httpClient.PostAsync($"{Urls.TaskUrl}{token.Value}", content);
+
+        if (response.IsSuccessStatusCode)
+        {
+            var responseString = await response.Content.ReadAsStringAsync();
+            var answerResponse = JsonSerializer.Deserialize<QuestionResponseDto>(responseString);
+            return answerResponse;
         }
         else
         {
             return new QuestionResponseDto { Code = -1, Msg = "Error fetching data" };
         }
     }
+
 }

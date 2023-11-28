@@ -1,5 +1,6 @@
 ﻿using AI_Devs.TaskApp.Services.Interfaces;
 using AI_Devs.TaskApp.Tasks;
+using Microsoft.Extensions.Logging;
 using OpenAI.Net;
 
 namespace AI_Devs.TaskApp
@@ -8,17 +9,19 @@ namespace AI_Devs.TaskApp
     {
         private readonly ITaskService taskService;
         private readonly IOpenAIService openAIService;
+        private readonly IFileService fileService;
 
         public MainPage()
         {
             InitializeComponent();
         }
 
-        public MainPage(ITaskService taskService, IOpenAIService openAIService)
+        public MainPage(ITaskService taskService, IOpenAIService openAIService, IFileService fileService)
         {
             InitializeComponent();
             this.taskService = taskService;
             this.openAIService = openAIService;
+            this.fileService = fileService;
         }
 
         private async void OnGetTaskContentClicked(object sender, EventArgs e)
@@ -79,8 +82,6 @@ namespace AI_Devs.TaskApp
         {
             SemanticScreenReader.Announce(EmbeddingBtn.Text);
 
-            var fileService = this.Handler.MauiContext.Services.GetService<IFileService>();
-
             var whisper = new Whisper(openAIService, taskService, fileService);
 
             await whisper.PerformTask();
@@ -100,6 +101,16 @@ namespace AI_Devs.TaskApp
             SemanticScreenReader.Announce(RodoBtn.Text);
 
             var whisper = new Rodo(openAIService, taskService);
+
+            await whisper.PerformTask();
+        }
+        private async void OnScraperBtnClicked(object sender, EventArgs e)
+        {
+            SemanticScreenReader.Announce(RodoBtn.Text);
+
+            var logger = this.Handler.MauiContext.Services.GetService<ILogger<Scraper>>();
+
+            var whisper = new Scraper(openAIService, taskService, fileService, logger);
 
             await whisper.PerformTask();
         }

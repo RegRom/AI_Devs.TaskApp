@@ -125,7 +125,7 @@
                     Grid.Row="1"
                     Grid.Column="2"
                 />
-
+                <!-- Row 2 -->
                 <Button
                     x:Name="RodoBtn"
                     Text="Rodo"
@@ -134,6 +134,15 @@
                     HorizontalOptions="Center" 
                     Grid.Row="2"
                     Grid.Column="0"
+                />
+                <Button
+                    x:Name="Scraper"
+                    Text="Scraper"
+                    SemanticProperties.Hint="Sends the answer"
+                    Clicked="OnScraperBtnClicked"
+                    HorizontalOptions="Center" 
+                    Grid.Row="2"
+                    Grid.Column="1"
                 />
             </Grid>
         </VerticalStackLayout>

@@ -28,16 +28,25 @@ public class TaskService : ITaskService
 
         if (token is not null)
         {
-            var response = await httpClient.GetAsync($"{Urls.TaskUrl}{token.Value}");
+            try
+            {
+                var response = await httpClient.GetAsync($"{Urls.TaskUrl}{token.Value}");
 
-            if (response.IsSuccessStatusCode)
-            {
-                return await response.Content.ReadAsStringAsync();
+                if (response.IsSuccessStatusCode)
+                {
+                    return await response.Content.ReadAsStringAsync();
+                }
+                else
+                {
+                    return "Error fetching data";
+                }
             }
-            else
+            catch (Exception e)
             {
-                return "Error fetching data";
+                _logger.LogError($"Getting task content failed with {e.GetType()}: {e.Message}");
+                throw;
             }
+
         }
 
         return "Failed to get the token for this task";
@@ -46,17 +55,25 @@ public class TaskService : ITaskService
     public async Task<TaskContentResponseDto> GetTaskContent(string taskName)
     {
         var token = await authenticator.GetToken(taskName, httpClient);
-        var response = await httpClient.GetFromJsonAsync<TaskContentResponseDto>($"{Urls.TaskUrl}{token.Value}");
-
-        if (response is null)
+        try
         {
-            return new TaskContentResponseDto
-            {
-                Msg = Errors.NoTaskContent
-            };
-        }
+            var response = await httpClient.GetFromJsonAsync<TaskContentResponseDto>($"{Urls.TaskUrl}{token.Value}");
 
-        return response;
+            if (response is null)
+            {
+                return new TaskContentResponseDto
+                {
+                    Msg = Errors.NoTaskContent
+                };
+            }
+
+            return response;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError($"Getting task content failed with {e.GetType()}: {e.Message}");
+            throw;
+        }
     }
 
     public async Task<TaskContentGenericResponseDto<T>> GetTaskContent<T>(string taskName)

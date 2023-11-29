@@ -94,6 +94,24 @@ public class TaskService : ITaskService
         return response;
     }
 
+    public async Task<T> GetCustomTypedTaskContent<T>(string taskName) where T : BaseTaskContentDto, new()
+    {
+        var token = await authenticator.GetToken(taskName, httpClient);
+
+        var response = await httpClient
+            .GetFromJsonAsync<T>($"{Urls.TaskUrl}{token.Value}");
+
+        if (response is null)
+        {
+            return new T
+            {
+                Msg = Errors.NoTaskContent
+            };
+        }
+
+        return response;
+    }
+
     public async Task<AnswerResponseDto?> SendAnswer(string taskName, string answer)
     {
         var token = await authenticator.GetToken(taskName, httpClient);

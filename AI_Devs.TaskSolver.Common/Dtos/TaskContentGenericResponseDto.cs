@@ -2,14 +2,8 @@
 
 namespace AI_Devs.TaskApp.Common.Dtos;
 
-public class TaskContentGenericResponseDto<T>
+public class TaskContentGenericResponseDto<T> : BaseTaskContentDto
 {
-    [JsonPropertyName("code")]
-    public int Code { get; set; }
-
-    [JsonPropertyName("msg")]
-    public string Msg { get; set; }
-
     [JsonPropertyName("input")]
     public T Input { get; set; }
 

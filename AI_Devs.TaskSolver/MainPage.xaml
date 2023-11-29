@@ -136,13 +136,22 @@
                     Grid.Column="0"
                 />
                 <Button
-                    x:Name="Scraper"
+                    x:Name="ScraperBtn"
                     Text="Scraper"
                     SemanticProperties.Hint="Sends the answer"
                     Clicked="OnScraperBtnClicked"
                     HorizontalOptions="Center" 
                     Grid.Row="2"
                     Grid.Column="1"
+                />
+                <Button
+                    x:Name="WhoamiBtn"
+                    Text="Whoami"
+                    SemanticProperties.Hint="Sends the answer"
+                    Clicked="OnWhoamiBtnClicked"
+                    HorizontalOptions="Center" 
+                    Grid.Row="2"
+                    Grid.Column="2"
                 />
             </Grid>
         </VerticalStackLayout>

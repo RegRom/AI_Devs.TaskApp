@@ -106,11 +106,20 @@ namespace AI_Devs.TaskApp
         }
         private async void OnScraperBtnClicked(object sender, EventArgs e)
         {
-            SemanticScreenReader.Announce(RodoBtn.Text);
+            SemanticScreenReader.Announce(ScraperBtn.Text);
 
             var logger = this.Handler.MauiContext.Services.GetService<ILogger<Scraper>>();
 
             var whisper = new Scraper(openAIService, taskService, fileService, logger);
+
+            await whisper.PerformTask();
+        }
+
+        private async void OnWhoamiBtnClicked(object sender, EventArgs e)
+        {
+            SemanticScreenReader.Announce(WhoamiBtn.Text);
+
+            var whisper = new Whoami(openAIService, taskService);
 
             await whisper.PerformTask();
         }

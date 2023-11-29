@@ -1,4 +1,5 @@
 ﻿
+using AI_Devs.TaskApp.Common.Dtos;
 using AI_Devs.TaskApp.Services.Interfaces;
 using OpenAI.Net;
 
@@ -30,15 +31,24 @@ public class Whoami : BaseTask
         var noAnswer = "...";
         var answer = "...";
         var messages = new List<Message>
-                {
-                    Message.Create(ChatRoleType.System, prompt),
-                    Message.Create(ChatRoleType.User, taskContent.Question),
-                };
+        {
+            Message.Create(ChatRoleType.System, prompt),
+        };
+
 
         while (answer == noAnswer) {
+            var taskContent = await _taskService.GetCustomTypedTaskContent<HintResponseDto>(_taskName);
+            messages.Add(Message.Create(ChatRoleType.User, taskContent.Hint));
 
+            var response = await _openAiService.Chat.Get(messages, o =>
+            {
+                o.Model = ModelTypes.Gpt41106Preview;
+                o.MaxTokens = 2000;
+            });
+
+            answer = response?.Result?.Choices.First().Message.Content ?? noAnswer;
         }
 
-        var answerResponse = await _taskService.SendAnswer(_taskName, response.Result.Choices.First().Message.Content);
+        var answerResponse = await _taskService.SendAnswer(_taskName, answer);
     }
 }

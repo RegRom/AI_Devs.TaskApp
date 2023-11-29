@@ -15,4 +15,6 @@ public interface ITaskService
     Task<AnswerResponseDto?> SendJsonAnswer(string taskName, string answer);
 
     Task<QuestionResponseDto?> SendQuestion(string question, string taskName);
+
+    Task<T> GetCustomTypedTaskContent<T>(string taskName) where T : BaseTaskContentDto, new();
 }

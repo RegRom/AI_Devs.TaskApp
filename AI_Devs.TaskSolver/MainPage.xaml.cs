@@ -110,18 +110,51 @@ namespace AI_Devs.TaskApp
 
             var logger = this.Handler.MauiContext.Services.GetService<ILogger<Scraper>>();
 
-            var whisper = new Scraper(openAIService, taskService, fileService, logger);
+            var scraper = new Scraper(openAIService, taskService, fileService, logger);
 
-            await whisper.PerformTask();
+            await scraper.PerformTask();
         }
 
         private async void OnWhoamiBtnClicked(object sender, EventArgs e)
         {
             SemanticScreenReader.Announce(WhoamiBtn.Text);
 
-            var whisper = new Whoami(openAIService, taskService);
+            var whoami = new Whoami(openAIService, taskService);
 
-            await whisper.PerformTask();
+            await whoami.PerformTask();
+        }
+
+        private async void OnSearchBtnClicked(object sender, EventArgs e)
+        {
+            SemanticScreenReader.Announce(WhoamiBtn.Text);
+
+            var factory = this.Handler.MauiContext.Services.GetService<IHttpClientFactory>();
+
+            var search = new Search(openAIService, taskService, factory);
+
+            await search.PrepareTask(300);
+
+            await search.PerformTask();
+        }
+
+        private async void OnPeopleBtnClicked(object sender, EventArgs e)
+        {
+            SemanticScreenReader.Announce(WhoamiBtn.Text);
+
+            var factory = this.Handler.MauiContext.Services.GetService<IHttpClientFactory>();
+
+            var search = new People(openAIService, taskService, factory);
+
+            await search.PerformTask();
+        }
+
+        private async void OnToolsBtnClicked(object sender, EventArgs e)
+        {
+            SemanticScreenReader.Announce(WhoamiBtn.Text);
+
+            var search = new Tools(openAIService, taskService);
+
+            await search.PerformTask();
         }
     }
 }

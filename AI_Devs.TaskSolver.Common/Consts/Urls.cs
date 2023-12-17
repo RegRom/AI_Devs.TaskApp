@@ -9,4 +9,6 @@ public class Urls
     public const string AnswerUrl = @"/answer/";
 
     public const string TokenUrl = @"/token/";
+
+    public const string LocalQdrant = @"http://localhost:6333";
 }

@@ -64,7 +64,7 @@
                 x:Name="AnswerResponse"
                 Text="" />
 
-            <Grid RowDefinitions="*,*,*"
+            <Grid RowDefinitions="*,*,*,*"
                     ColumnDefinitions="*,*,*">
 
                 <!-- Row 0 -->
@@ -151,6 +151,34 @@
                     Clicked="OnWhoamiBtnClicked"
                     HorizontalOptions="Center" 
                     Grid.Row="2"
+                    Grid.Column="2"
+                />
+                <!-- Row 3 -->
+                <Button
+                    x:Name="SearchBtn"
+                    Text="Search"
+                    SemanticProperties.Hint="Sends the answer"
+                    Clicked="OnSearchBtnClicked"
+                    HorizontalOptions="Center" 
+                    Grid.Row="3"
+                    Grid.Column="0"
+                />
+                <Button
+                    x:Name="PeopleBtn"
+                    Text="People"
+                    SemanticProperties.Hint="Sends the answer"
+                    Clicked="OnPeopleBtnClicked"
+                    HorizontalOptions="Center" 
+                    Grid.Row="3"
+                    Grid.Column="1"
+                />
+                <Button
+                    x:Name="ToolsBtn"
+                    Text="Tools"
+                    SemanticProperties.Hint="Sends the answer"
+                    Clicked="OnToolsBtnClicked"
+                    HorizontalOptions="Center" 
+                    Grid.Row="3"
                     Grid.Column="2"
                 />
             </Grid>
